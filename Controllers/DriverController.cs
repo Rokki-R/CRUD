@@ -40,5 +40,31 @@ namespace CRUD.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpPost("createDriver")]
+        public async Task<IActionResult> AddDriver()
+        {
+            try
+            {
+                var form = await Request.ReadFormAsync();
+                Driver driver = new Driver()
+                {
+                    Name = form["name"].ToString(),
+                    Surname = form["surname"].ToString(),
+                    Age = Convert.ToInt32(form["age"]), // Corrected key
+                    Team = form["team"].ToString(),
+                    Contract_expiration = form["contract_expiration"].ToString(),
+                    Date_of_birth = form["date_of_birth"].ToString(),
+                };
+
+                driver.Id = await _driverRepo.CreateDriver(driver);
+
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
     }
 }
