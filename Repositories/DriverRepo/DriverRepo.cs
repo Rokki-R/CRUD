@@ -64,5 +64,28 @@ namespace CRUD.Repositories.DriverRepo
                 }
             }
         }
+        public async Task<int> CreateDriver(Driver driver)
+        {
+            using MySqlConnection connection = GetConnection();
+            await connection.OpenAsync();
+
+            using MySqlCommand command = new MySqlCommand(
+                "INSERT INTO driver (name, surname, age, team, contract_expiration, date_of_birth) " +
+                "VALUES (@Name, @Surname, @Age, @Team, @Contract_expiration, @Date_of_birth)", connection); // Corrected placeholders
+
+            command.Parameters.AddWithValue("@Name", driver.Name);
+            command.Parameters.AddWithValue("@Surname", driver.Surname);
+            command.Parameters.AddWithValue("@Age", driver.Age);
+            command.Parameters.AddWithValue("@Team", driver.Team);
+            command.Parameters.AddWithValue("@Contract_expiration", driver.Contract_expiration);
+            command.Parameters.AddWithValue("@Date_of_birth", driver.Date_of_birth);
+
+            await command.ExecuteNonQueryAsync();
+
+            command.CommandText = "SELECT LAST_INSERT_ID()";
+            int id = Convert.ToInt32(await command.ExecuteScalarAsync());
+
+            return id;
+        }
     }
 }
