@@ -19,6 +19,14 @@
     border: 1px solid #ccc;
     border-radius: 4px;
   }
+
+  .ageError, .dateError {
+    /* Add your custom styles for the error state */
+    border: 2px solid red;
+    color: red;
+    /* Any other styles you want to apply */
+  }
+
   
   .form-button {
     background-color: #007bff;
