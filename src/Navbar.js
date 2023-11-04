@@ -1,10 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import './Navbar.css'
 
 export default function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-      <Link to="/" className="navbar-brand">Formula 1</Link>
+      <Link to="/" className="navbar-brand">
+        <img src="/Images/f1_logo.png" alt="F1 Logo" />
+      </Link>
       <button
         className="navbar-toggler"
         type="button"
@@ -23,7 +26,6 @@ export default function Navbar() {
               Add Driver
             </Link>
           </li>
-          {/* Add more navigation items as needed */}
         </ul>
       </div>
     </nav>
