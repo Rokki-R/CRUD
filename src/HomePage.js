@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { variables } from './Variables';
 import './HomePage.css'; // Import your custom CSS file
+import axios from 'axios';
+import toast, { Toaster } from 'react-hot-toast';
 
 function HomePage() {
   const [drivers, setDrivers] = useState([]);
@@ -22,33 +24,63 @@ function HomePage() {
     fetchDrivers();
   }, []);
 
+  const handleUpdate = (driverId) => {
+    console.log('Update driver with ID:', driverId);
+  };
+
+  const handleDelete = async (driverId) => {
+    try {
+      await axios.delete(variables.API_URL + `Driver/deleteDriver/${driverId}`);
+      toast.success('Driver deleted successfully');
+  
+      setDrivers((prevDrivers) => prevDrivers.filter((driver) => driver.id !== driverId));
+    } catch (error) {
+      console.error('Error deleting driver:', error);
+      toast.error('Error deleting driver');
+    }
+  };
+
   return (
-    <div className="container col-md-6">
+    <div className="container col-md-7">
       <center><h1 className="mt-4">Drivers List</h1></center>
+      <Toaster/>
       <table className="table table-striped">
         <thead>
           <tr>
-            <th>ID</th>
             <th>Name</th>
             <th>Surname</th>
             <th>Age</th>
             <th>Date of Birth</th>
             <th>Team</th>
             <th>Contract Expiration</th>
-            {/* Add other table headers here */}
+            <th>Actions</th> {/* New column for actions */}
           </tr>
         </thead>
         <tbody>
           {drivers.map((driver) => (
             <tr key={driver.id}>
-              <td>{driver.id}</td>
               <td>{driver.name}</td>
               <td>{driver.surname}</td>
               <td>{driver.age}</td>
               <td>{driver.date_of_birth}</td>
               <td>{driver.team}</td>
               <td>{driver.contract_expiration}</td>
-              {/* Add other table cells for driver attributes */}
+              <td>
+                <div className="actions-container">
+                  <button
+                    className="update-button"
+                    onClick={() => handleUpdate(driver.id)}
+                  >
+                    Update
+                  </button>
+                  <button
+                    className="delete-button"
+                    onClick={() => handleDelete(driver.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </td>
             </tr>
           ))}
         </tbody>

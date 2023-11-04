@@ -87,5 +87,18 @@ namespace CRUD.Repositories.DriverRepo
 
             return id;
         }
+        public async Task<bool> Delete(int id)
+        {
+            using MySqlConnection connection = GetConnection();
+            using MySqlCommand command = new MySqlCommand(
+                "DELETE FROM driver WHERE id=@Id", connection);
+
+            command.Parameters.AddWithValue("@Id", id);
+
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
+
+            return true;
+        }
     }
 }
