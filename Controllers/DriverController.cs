@@ -65,6 +65,19 @@ namespace CRUD.Controllers
                 return BadRequest();
             }
         }
+        [HttpDelete("deleteDriver/{driverId}")]
+        public async Task<IActionResult> DeleteDriver(int driverId)
+        {
+            try
+            {
+                var driver = await _driverRepo.Delete(driverId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
     }
 }
