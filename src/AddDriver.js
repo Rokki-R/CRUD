@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 import { variables } from './Variables';
 import './AddDriver.css';
 
@@ -12,6 +13,7 @@ const AddDriver = () => {
   const [contract_expiration, setContractExpiration] = useState('');
   const [birthDateError, setBirthDateError] = useState('');
   const [contractExpDateError, setContractExpError] = useState('');
+  const history = useHistory();
 
   function calculateAge(birthDate) {
     const birthdateArray = birthDate.split('-');
@@ -101,6 +103,10 @@ const AddDriver = () => {
     }
   };
 
+  const handleBack = () => {
+    history.push('/')
+  };
+
   return (
     <div className="form-container">
       <center>
@@ -150,11 +156,14 @@ const AddDriver = () => {
           onChange={(event) => setContractExpiration(event.target.value)}
         />
         {contractExpDateError}
-        <center>
-          <button className="form-button" type="submit" onClick={(event) => handleCreate(event)}>
+        <div className="form-button-container">
+          <button className="form-button add" type="submit" onClick={(event) => handleCreate(event)}>
             Add Driver
           </button>
-        </center>
+          <button className="form-button back" type="button" onClick={handleBack}>
+            Back
+          </button>
+        </div>
       </form>
     </div>
   );

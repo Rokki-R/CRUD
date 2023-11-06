@@ -4,6 +4,7 @@ using System.Data;
 using Microsoft.AspNetCore.Authorization;
 using CRUD.Repositories.DriverRepo;
 using Microsoft.Extensions.Configuration;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace CRUD.Controllers
 {
@@ -52,8 +53,8 @@ namespace CRUD.Controllers
                     Surname = form["surname"].ToString(),
                     Age = Convert.ToInt32(form["age"]), // Corrected key
                     Team = form["team"].ToString(),
-                    Contract_expiration = form["contract_expiration"].ToString(),
-                    Date_of_birth = form["date_of_birth"].ToString(),
+                    Contract_expiration = Convert.ToDateTime(form["contract_expiration"]).ToString("yyyy-MM-dd"),
+                    Date_of_birth = Convert.ToDateTime(form["date_of_birth"]).ToString("yyyy-MM-dd"),
                 };
 
                 driver.Id = await _driverRepo.CreateDriver(driver);
@@ -79,5 +80,54 @@ namespace CRUD.Controllers
             }
         }
 
+        [HttpGet("getDriver/{driverId}")]
+        public async Task<IActionResult> GetDriver(int driverId)
+        {
+            try
+            {
+                var driver = await _driverRepo.GetDriver(driverId);
+                if (driver == null)
+                {
+                    return BadRequest();
+                }
+                return Ok(driver);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("updateDriver/{driverId}")]
+        public async Task<IActionResult> UpdateDriver(int driverId, IFormCollection form)
+        {
+            try
+            {
+
+                var driverToUpdate = new Driver()
+                {
+                    Id = driverId,
+                    Name = form["name"].ToString(),
+                    Surname = form["surname"].ToString(),
+                    Age = Convert.ToInt32(form["age"]),
+                    Date_of_birth = Convert.ToDateTime(form["date_of_birth"]).ToString("yyyy-MM-dd"),
+                    Team = form["team"].ToString(),
+                    Contract_expiration = Convert.ToDateTime(form["contract_expiration"]).ToString("yyyy-MM-dd")
+                };
+                bool updated = await _driverRepo.UpdateDriver(driverToUpdate);
+                if (updated)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return NotFound("Driver not found");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

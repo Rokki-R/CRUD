@@ -100,5 +100,50 @@ namespace CRUD.Repositories.DriverRepo
 
             return true;
         }
+        public async Task<Driver> GetDriver(int id)
+        {
+            var driver = new Driver();
+
+            using (var connection = new MySqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                using (var command = new MySqlCommand("SELECT * FROM driver WHERE id = @id", connection))
+                {
+                    command.Parameters.AddWithValue("@id", id);
+                    using (DbDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        await reader.ReadAsync();
+                        driver.Id = Convert.ToInt32(reader["id"]);
+                        driver.Name = reader["name"].ToString();
+                        driver.Surname = reader["surname"].ToString();
+                        driver.Age = Convert.ToInt32(reader["age"]);
+                        driver.Team = reader["team"].ToString();
+                        driver.Contract_expiration = Convert.ToDateTime(reader["contract_expiration"]).ToString("yyyy-MM-dd");
+                        driver.Date_of_birth = Convert.ToDateTime(reader["date_of_birth"]).ToString("yyyy-MM-dd");
+
+                        return driver;
+                    }
+                }
+            }
+        }
+        public async Task<bool> UpdateDriver(Driver driver)
+        {
+            using MySqlConnection connection = GetConnection();
+            using MySqlCommand command = new MySqlCommand(
+                "UPDATE driver SET name=@Name, surname=@Surname, age=@Age, date_of_birth=@Date_of_birth, team=@Team, contract_expiration=@Contract_expiration WHERE id=@Id", connection);
+
+            command.Parameters.AddWithValue("@Id", driver.Id);
+            command.Parameters.AddWithValue("@Name", driver.Name);
+            command.Parameters.AddWithValue("@Surname", driver.Surname);
+            command.Parameters.AddWithValue("@Age", driver.Age);
+            command.Parameters.AddWithValue("@Date_of_birth", driver.Date_of_birth);
+            command.Parameters.AddWithValue("@Team", driver.Team);
+            command.Parameters.AddWithValue("@Contract_expiration", driver.Contract_expiration);
+
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
+
+            return true;
+        }
     }
 }
