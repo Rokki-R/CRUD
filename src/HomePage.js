@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { variables } from './Variables';
+import { useHistory } from 'react-router-dom';
 import './HomePage.css'; // Import your custom CSS file
 import axios from 'axios';
+///import { useNavigate } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 
 function HomePage() {
   const [drivers, setDrivers] = useState([]);
+  const history = useHistory();
 
   useEffect(() => {
     async function fetchDrivers() {
@@ -25,7 +28,8 @@ function HomePage() {
   }, []);
 
   const handleUpdate = (driverId) => {
-    console.log('Update driver with ID:', driverId);
+    history.push(`update/${driverId}`)
+
   };
 
   const handleDelete = async (driverId) => {
@@ -47,7 +51,7 @@ function HomePage() {
       <table className="table table-striped">
         <thead>
           <tr>
-            <th>Name</th>
+            <th>Namse</th>
             <th>Surname</th>
             <th>Age</th>
             <th>Date of Birth</th>
